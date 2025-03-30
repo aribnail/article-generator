@@ -22,6 +22,10 @@ if [ -z "$SERVER_PORT" ]; then
   SERVER_PORT=${SERVER_PORT:-22}
 fi
 
+if [ -z "$SSH_KEY_PATH" ]; then
+  read -p "Введите путь к файлу приватного ключа (например, /Users/a1111/Downloads/ubuntu-STD3-1-4-10GB-wIwuJsGl.pem): " SSH_KEY_PATH
+fi
+
 if [ -z "$GITHUB_REPO" ]; then
   read -p "Введите URL GitHub репозитория: " GITHUB_REPO
 fi
@@ -37,6 +41,7 @@ if [ "$SAVE_DATA" = "y" ]; then
   echo "SERVER_USER=\"$SERVER_USER\"" > .env.deploy
   echo "SERVER_IP=\"$SERVER_IP\"" >> .env.deploy
   echo "SERVER_PORT=\"$SERVER_PORT\"" >> .env.deploy
+  echo "SSH_KEY_PATH=\"$SSH_KEY_PATH\"" >> .env.deploy
   echo "GITHUB_REPO=\"$GITHUB_REPO\"" >> .env.deploy
   echo "REMOTE_DIR=\"$REMOTE_DIR\"" >> .env.deploy
   echo "# Добавлен в .gitignore, не коммитьте этот файл" >> .env.deploy
@@ -49,9 +54,12 @@ fi
 
 echo "🚀 Начинаем настройку и деплой на сервер"
 
+# Создаем опции SSH с ключом
+SSH_OPTS="-p $SERVER_PORT -i $SSH_KEY_PATH"
+
 # Подключение к серверу и настройка/обновление приложения
 echo "🔄 Настройка на сервере..."
-ssh -p $SERVER_PORT $SERVER_USER@$SERVER_IP << EOF
+ssh $SSH_OPTS $SERVER_USER@$SERVER_IP << EOF
     # Проверяем установлен ли Git и Python
     command -v git >/dev/null 2>&1 || { echo "⚙️ Устанавливаем Git..."; sudo apt update && sudo apt install -y git; }
     command -v python3 >/dev/null 2>&1 || { echo "⚙️ Устанавливаем Python..."; sudo apt update && sudo apt install -y python3 python3-pip python3-venv; }

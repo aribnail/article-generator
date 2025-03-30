@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Приложение на VK Cloud</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Мое первое приложение на VK Cloud</h1>
+        <button id="surprise-button">Нажми меня!</button>
+        <div id="message" class="hidden">
+            <h2>ТЫ ЛУЧШАЯ!</h2>
+            <p>✨ Успешный деплой в VK Cloud ✨</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('surprise-button').addEventListener('click', function() {
+            const message = document.getElementById('message');
+            message.classList.toggle('hidden');
+            
+            // Анимация
+            if (!message.classList.contains('hidden')) {
+                setTimeout(() => {
+                    message.classList.add('animate');
+                }, 50);
+            } else {
+                message.classList.remove('animate');
+            }
+        });
+    </script>
+</body>
+</html> 
